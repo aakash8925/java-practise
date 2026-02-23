@@ -31,3 +31,46 @@ public class CountNumbers2 {
 		}
 	}
 }
+
+
+//working code
+
+public class CountNumbers {
+	public static void main(String[] args) {
+		
+        int num = 123;
+        int original = num;
+        
+        while (num > 0) {
+
+            int digit = num % 10;
+            int temp = original;
+            int count = 0;
+            boolean alreadyCounted = false;
+
+            // Check if digit already processed
+            int check = num / 10;
+            while (check > 0) {
+                if (check % 10 == digit) {
+                    alreadyCounted = true;
+                    break;
+                }
+                check = check / 10;
+            }
+            
+            if (!alreadyCounted) {
+                // Count occurrences
+                while (temp > 0) {
+                    if (temp % 10 == digit) {
+                        count++;
+                    }
+                    temp = temp / 10;
+                }
+
+                System.out.println(digit + " -> " + count);
+            }
+            
+            num = num / 10;
+        }
+    }
+}
