@@ -76,6 +76,7 @@ public class ComputerStore {
 	        System.out.println("3 - Update a Product");
 	        System.out.println("4 - Remove Product");
 	        System.out.println("5 - View Cart");
+	        System.out.println("6 - Add New Product");
 	        
 	        int choice = sc.nextInt();
 	        sc.nextLine();	        
@@ -228,16 +229,124 @@ public class ComputerStore {
 	        	
 	        	break;
 	        case 5:
-	        	if(cart.isEmpty()) {
+	            if (cart.isEmpty()) {
 	                System.out.println("Your Cart is empty!");
 	            } else {
-	                double total = 0;
-	                for(Product item : cart) {
-	                    System.out.println("- " + item.getName() + " (₹" + item.getPrice() + ")");
-	                    total += item.getPrice();
+	                System.out.println("\n--- Your Shopping Cart ---");
+	                
+	                List<Product> alreadyChecked = new ArrayList<>();
+	                double grandTotal = 0;
+
+	                for (int i = 0; i < cart.size(); i++) {
+	                    Product currentItem = cart.get(i);
+
+	                    if (!alreadyChecked.contains(currentItem)) {
+	                        
+	                        // 1. Counting how many of this specific item are in the cart
+	                        int count = 0;
+	                        for (int j = 0; j < cart.size(); j++) {
+	                            if (cart.get(j).equals(currentItem)) {
+	                                count++;
+	                            }
+	                        }
+
+	                        // 2. Calculating the math
+	                        double unitPrice = currentItem.getPrice();
+	                        double subTotal = unitPrice * count;
+
+	                        // 3. Printing in the "Detailed Receipt" format
+	                        System.out.println("\nProduct: " + currentItem.getName());
+	                        System.out.println("   Price (per unit): ₹" + unitPrice);
+	                        System.out.println("   Quantity:         x " + count);
+	                        System.out.println("   Item Sub-Total:   ₹" + subTotal);
+	                        System.out.println("--------------------------------------");
+
+	                        // 4. Marking as checked so we don't print this product again
+	                        alreadyChecked.add(currentItem);
+	                        grandTotal += subTotal;
+	                    }
 	                }
-	                System.out.println("Total Amount: ₹" + total);
-	            }break;
+	                System.out.println("---------------------------");
+	                System.out.println("Grand Total: ₹" + grandTotal);
+	            }
+	            break;
+	        case 6:
+	        	System.out.print("Enter Product ID to add: ");
+	        	int addid = sc.nextInt();
+	        	sc.nextLine();
+	        	
+		        if (!Products.containsKey(addid)) {
+		        	boolean isProductAdded = false;
+
+		        	while (!isProductAdded) {
+		        	    System.out.println("\n--- Add New Product ---");
+		        	    
+		        	    // 1. Validate Name
+		        	    System.out.println("Enter Product Name:");
+		        	    String addName = sc.nextLine().trim();
+		        	    if (addName.isEmpty()) {
+		        	        System.out.println("Error: Name cannot be empty. Please try again.");
+		        	        continue;
+		        	    }
+
+		        	   
+		        	    System.out.println("Enter the stock quantity:");
+		        	    int aquantity;
+		        	    if (sc.hasNextInt()) {
+		        	        aquantity = sc.nextInt();
+		        	        sc.nextLine();
+		        	        if (aquantity < 0) {
+		        	            System.out.println("Error: Quantity cannot be negative.");
+		        	            continue;
+		        	        }
+		        	    } else {
+		        	        System.out.println("Error: Please enter a valid number for quantity.");
+		        	        sc.nextLine();
+		        	        continue;
+		        	    }
+
+		        	    
+		        	    System.out.println("Enter the category:");
+		        	    String acategory = sc.nextLine().trim();
+		        	    if (acategory.isEmpty()) {
+		        	        System.out.println("Error: Category cannot be empty.");
+		        	        continue;
+		        	    }
+
+		        	    
+		        	    System.out.println("Enter the brand name:");
+		        	    String abrand = sc.nextLine().trim();
+		        	    if (abrand.isEmpty()) {
+		        	        System.out.println("Error: Brand name cannot be empty.");
+		        	        continue;
+		        	    }
+
+		        	    
+		        	    System.out.println("Enter the price:");
+		        	    double aprice;
+		        	    if (sc.hasNextDouble()) {
+		        	        aprice = sc.nextDouble();
+		        	        sc.nextLine();
+		        	        if (aprice <= 0) {
+		        	            System.out.println("Error: Price must be greater than 0.");
+		        	            continue;
+		        	        }
+		        	    } else {
+		        	        System.out.println("Error: Please enter a valid decimal for price.");
+		        	        sc.nextLine();
+		        	        continue;
+		        	    }
+
+			            Products.put(addid, new Product(addid, aquantity, addName, acategory, abrand, aprice));
+		        	    
+		        	    System.out.println("Success: Product added successfully!");
+		        	    isProductAdded = true;
+		        	}
+		            
+		        } else {
+		            System.out.println("Error: Product ID " + addid + " already found.");
+		        }
+		        break;
 	        }  
 		}
 		
